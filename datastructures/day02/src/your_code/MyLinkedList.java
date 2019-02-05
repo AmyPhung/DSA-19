@@ -25,7 +25,9 @@ public class MyLinkedList {
     }
 
     public MyLinkedList() {
-        // TODO
+        head = null;
+        tail = null;
+        size = 0;
     }
 
     public int size() {
@@ -45,30 +47,94 @@ public class MyLinkedList {
     }
 
     public void addLast(Chicken c) {
-        // TODO
+        if (size == 0) {
+            head = new Node(c, null, null);
+            tail = head;
+        } else {
+            tail.next = new Node(c, tail, null);
+            tail = tail.next;
+        }
+        size++;
     }
 
     public void addFirst(Chicken c) {
-        // TODO
+        if (size == 0) {
+            head = new Node(c, null, null);
+            tail = head;
+        } else {
+            head.prev = new Node(c, null, head);
+            head = head.prev;
+        }
+        size++;
     }
 
     public Chicken get(int index) {
-        // TODO
-        return null;
+        if (index >= size) {
+            throw new IndexOutOfBoundsException(index);
+        } else {
+            Node curr_node = head;
+            for (int i = 0; i < index; i++) {
+                curr_node = curr_node.next;
+            }
+            return curr_node.val;
+        }
     }
 
     public Chicken remove(int index) {
-        // TODO
-        return null;
+        if (index >= size) {
+            throw new IndexOutOfBoundsException(index);
+        } else if (index == 0) {
+            return removeFirst();
+        } else if (index == size-1) {
+            return removeLast();
+        } else {
+            Node rm_node = head;
+            for (int i = 0; i < index; i++) {
+                rm_node = rm_node.next;
+            }
+            rm_node.prev.next = rm_node.next;
+            rm_node.next.prev =  rm_node.prev;
+            size--;
+
+            return rm_node.val;
+        }
     }
 
     public Chicken removeFirst() {
-        // TODO
-        return null;
+        Chicken rm_chicken;
+
+        if (size == 0) {
+            throw new IndexOutOfBoundsException(0);
+        } else if (size == 1) {
+            rm_chicken = head.val;
+            head = null;
+            tail = null;
+            size--;
+        } else {
+            rm_chicken = head.val;
+            head.next.prev = null;
+            head = head.next;
+            size--;
+        }
+        return rm_chicken;
     }
 
     public Chicken removeLast() {
-        // TODO
-        return null;
+        Chicken rm_chicken;
+
+        if (size == 0) {
+            throw new IndexOutOfBoundsException(0);
+        } else if (size == 1) {
+            rm_chicken = head.val;
+            head = null;
+            tail = null;
+            size--;
+        } else {
+            rm_chicken = tail.val;
+            tail.prev.next = null;
+            tail = tail.prev;
+            size--;
+        }
+        return rm_chicken;
     }
 }
