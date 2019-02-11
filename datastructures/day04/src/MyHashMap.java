@@ -104,13 +104,19 @@ public class MyHashMap<K, V> implements Map<K, V> {
     @Override
     public V get(Object key) {
         // TODO: Complete this method
+
+//        if (!containsKey(key)) {
+//            System.out.println("NOOO");
+//            return null;
+//        }
+
         LinkedList<Entry> bucket = chooseBucket(key);
         if (bucket.size() == 0) {
             return null;
         } else {
             for (int i=0; i<bucket.size(); i++){
                 Entry entry = bucket.get(i);
-                if (entry.key == key) {
+                if (entry.key.equals(key)) {
                     return entry.value;
                 }
             }
@@ -128,19 +134,24 @@ public class MyHashMap<K, V> implements Map<K, V> {
         // hint: use chooseBucket() to determine which bucket to place the pair in
         // hint: use rehash() to appropriately grow the hashmap if needed
         if (size/buckets.length >= ALPHA) {
-            System.out.println("rehasing");
+            System.out.println("rehashing x2");
             rehash(2);
         }
-        if (get(key) != null) {
-            return get(key);
-        } else {
-            LinkedList<Entry> bucket = chooseBucket(key);
-            Entry entry = new Entry(key, value);
-            bucket.add(entry);
-            size++;
-            return null;
+        V rtn_val = get(key);
+
+        if (containsKey(key)) {
+            remove(key);
         }
+
+        LinkedList<Entry> bucket = chooseBucket(key);
+        Entry entry = new Entry(key, value);
+        bucket.add(entry);
+        size++;
+
+        return rtn_val;
     }
+
+
 
     /**
      * Remove the key-value pair associated with the given key. Shrink if needed, according to `BETA`.
@@ -155,7 +166,7 @@ public class MyHashMap<K, V> implements Map<K, V> {
 
         LinkedList<Entry> bucket = chooseBucket(key);
         for (Entry entry : bucket) {
-            if (entry.key == key) {
+            if (entry.key.equals(key)) {
                 V value = entry.value;
 
                 bucket.remove(entry);
@@ -163,9 +174,9 @@ public class MyHashMap<K, V> implements Map<K, V> {
                 size--;
 
                 if (size > 1) {
-                    if (size/buckets.length <= BETA) {
-                        System.out.println("rehashing");
-                        rehash(0.25);
+                    if ((float) size/buckets.length < BETA && buckets.length > MIN_BUCKETS) {
+                        System.out.println("rehashing x0.5");
+                        rehash(0.5);
                     }
                 }
                 return value;
