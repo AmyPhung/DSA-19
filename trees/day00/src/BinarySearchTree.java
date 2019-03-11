@@ -1,3 +1,6 @@
+import com.sun.source.tree.Tree;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class BinarySearchTree<T extends Comparable<T>> {
@@ -28,8 +31,17 @@ public class BinarySearchTree<T extends Comparable<T>> {
     }
 
     public List<T> inOrderTraversal() {
-        // TODO
-        return null;
+        // O(N) - need to go to all nodes
+        List<T> output = new ArrayList<>();
+        return traverse(root, output);
+    }
+    public List<T> traverse(TreeNode<T> curr_node, List<T> output) {
+        if (curr_node != null) {
+            traverse(curr_node.leftChild, output);
+            output.add(curr_node.key);
+            traverse(curr_node.rightChild, output);
+        }
+        return output;
     }
 
     /**
@@ -67,7 +79,9 @@ public class BinarySearchTree<T extends Comparable<T>> {
         else {
             // Case 3: two children
             // TODO
-            replacement = null;
+            replacement = findPredecessor(n);
+            delete(replacement);
+            replacement.moveChildrenFrom(n);
         }
 
         // Put the replacement in its correct place, and set the parent.
@@ -103,12 +117,65 @@ public class BinarySearchTree<T extends Comparable<T>> {
 
     private TreeNode<T> findPredecessor(TreeNode<T> n) {
         // TODO
-        return null;
+        // O(log N) - you don't go back up the tree
+        // O(N) worst case - can have a tree of height N
+        TreeNode<T> curr_node;
+        if (n.leftChild != null) {
+            curr_node = n.leftChild;
+            while (curr_node.hasRightChild()) {
+                curr_node = curr_node.rightChild;
+            }
+        } else {
+            curr_node = n.parent;
+            while (curr_node != null && n.isLeftChild()) {
+                n = curr_node;
+                curr_node = curr_node.parent;
+            }
+        }
+        return curr_node;
     }
 
     private TreeNode<T> findSuccessor(TreeNode<T> n) {
         // TODO
-        return null;
+        TreeNode<T> curr_node;
+        if (n.rightChild != null) {
+            curr_node = n.rightChild;
+            while (curr_node.hasLeftChild()) {
+                curr_node = curr_node.leftChild;
+            }
+        } else {
+            curr_node = n.parent;
+            while (curr_node != null && n.isRightChild()) {
+                n = curr_node;
+                curr_node = curr_node.parent;
+            }
+        }
+        return curr_node;
+
+//        if (n.rightChild != null) {
+//            TreeNode<T> curr_node = n.rightChild;
+//            while (curr_node.hasLeftChild()) {
+//                curr_node = curr_node.leftChild;
+//            }
+//            return curr_node;
+//        } else if (n.parent == null) {
+//            return null;
+//        } else if (n == n.parent.leftChild) { // is left leaf
+//            return n.parent;
+//        } else if (n == n.parent.rightChild) { // is right leaf
+//            TreeNode<T> curr_node = n.parent;
+//            if (curr_node.parent == null) {
+//                return null;
+//            }
+//            while (curr_node.parent.leftChild != curr_node) {
+//                curr_node = curr_node.parent;
+//                if (curr_node.parent == null) {
+//                    return null;
+//                }
+//            }
+//            return curr_node.parent;
+//        }
+//        return null;
     }
 
     /**

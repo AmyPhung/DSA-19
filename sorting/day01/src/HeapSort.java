@@ -1,3 +1,5 @@
+
+
 public class HeapSort extends SortAlgorithm {
     int size;
     int[] heap;
@@ -18,7 +20,47 @@ public class HeapSort extends SortAlgorithm {
     // Corrects the position of element indexed i by sinking it.
     // Use either recursion or a loop to then sink the child
     public void sink(int i) {
-        // TODO
+        int l_idx = leftChild(i);
+        int r_idx = rightChild(i);
+
+        // Edge case: no children
+        if (l_idx > size-1 && r_idx > size-1) {
+            System.out.println("Out of bounds");
+        }
+
+        // Edge case: only right child
+        else if (l_idx > size-1) {
+            if (heap[r_idx] > heap[i]) {
+                swap(heap, i, r_idx);
+                sink(r_idx);
+            }
+        }
+
+        // Edge case: only left child
+        else if (r_idx > size-1) {
+            if (heap[l_idx] > heap[i]) {
+                swap(heap, i, l_idx);
+                sink(l_idx);
+            }
+        }
+
+        else {
+            // Base case: children are smaller
+            if (heap[i] >= heap[l_idx] && heap[i] >= heap[r_idx]) {
+                return;
+            }
+
+            // Recursive case: one or both the children are larger
+            int idx;
+            if (heap[l_idx] > heap[r_idx]) {
+                idx = l_idx;
+            } else {
+                idx = r_idx;
+            }
+            System.out.println("swapping");
+            swap(heap, i, idx);
+            sink(idx);
+        }
     }
 
     // Given the array, build a heap by correcting every non-leaf's position, starting from the bottom, then
@@ -28,16 +70,16 @@ public class HeapSort extends SortAlgorithm {
         this.size = array.length;
 
         for (int i=this.size / 2 - 1; i>=0; i--) {
-            // TODO
+            sink(i);
         }
     }
 
     /**
-     * Best-case runtime:
-     * Worst-case runtime:
-     * Average-case runtime:
+     * Best-case runtime: N log N
+     * Worst-case runtime: N log N
+     * Average-case runtime: N log N
      *
-     * Space-complexity:
+     * Space-complexity: 1 (log N for recursive case)
      */
     @Override
     public int[] sort(int[] array) {
@@ -45,8 +87,10 @@ public class HeapSort extends SortAlgorithm {
 
         for (int i=size-1; i>0; i--) {
             // TODO
+            swap(heap,i,0);
+            size--;
+            sink(0);
         }
-
         return heap;
     }
 }

@@ -88,7 +88,6 @@ public class ProblemsTests {
             String[] sorted = sort(S);
             Problems.sortStrings(S, l);
             assertArrayEquals(S, sorted);
-
         }
     }
 

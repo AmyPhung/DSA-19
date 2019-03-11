@@ -74,6 +74,7 @@ public class MyHashMapTest {
 
     @Test
     public void testPut() {
+        System.out.println(map.size());
         assertEquals(1, (int) map.put("Billy", 11));
         assertEquals(4, map.size());
         assertEquals(11, (int) map.get("Billy"));
@@ -85,8 +86,10 @@ public class MyHashMapTest {
 
     @Test
     public void testResize() {
-        for (int i = 0; i < 10000; i++)  //Prava got tired of naming her 10000 goats
+        for (int i = 0; i < 10000; i++) { //Prava got tired of naming her 10000 goats
             map.put(Integer.toString(i), i);
+        }
+
         assertEquals(9999, (int) map.get("9999"));
         assertEquals(1, (int) map.get("Billy"));
         MyHashMap temp = (MyHashMap) map;

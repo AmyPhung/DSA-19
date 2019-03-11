@@ -13,7 +13,7 @@ public class MyArrayList {
         size = 0;
     }
 
-    // TODO: Runtime: O(N)* - Resizing is N average and adding is N worst case
+    // TODO: Runtime: O(N), O(1)* - Resizing is 1 average and adding is N worst case
     public void add(Cow c) {
         // if array is full, double size.
         if (size == elems.length) {
@@ -57,8 +57,8 @@ public class MyArrayList {
         if (size < elems.length*0.25) {
             Cow[] newArr = new Cow[elems.length/2];
             if (elems.length/2 != 1) {
-            System.arraycopy(elems, 0, newArr, 0, size);
-            elems = newArr;
+                System.arraycopy(elems, 0, newArr, 0, size);
+                elems = newArr;
           }
         }
         return rm;

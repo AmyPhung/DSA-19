@@ -22,7 +22,7 @@ public class MyStack implements StackADT<Integer> {
             max.addFirst(e);
         }
         ll.addFirst(e);
-        if (e > max.getFirst()) {
+        if (e >= max.getFirst()) {
             max.addFirst(e);
         }
     }
