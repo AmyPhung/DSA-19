@@ -52,11 +52,59 @@ public class PeakFinding {
 
     public static int findOneDPeak(int[] nums) {
         // TODO
-        return 0;
+        int start = 0; // where to start looking
+        int end = nums.length; // where to stop looking
+
+        while (start != end) { // O(log N worst case)
+            int mid = (int) Math.floor((end + start) / 2.0);
+            int x = peakOneD(mid, nums);  // O(1)
+            if (x == 0) {
+                return mid;
+            }
+            else if (x == -1) {
+                end = mid;
+            }
+            else if (x == 1) {
+                start = mid + 1;
+            }
+        }
+        return 0; // should never get here
     }
 
     public static int[] findTwoDPeak(int[][] nums) {
         // TODO
+        int x_start = 0;
+        int x_end = nums[0].length;
+        int y_start = 0;
+        int y_end = nums.length;
+
+        boolean b = true;
+        while (x_end != x_start && y_end != y_start) {
+            if (b) {
+                int x_mid = (int) Math.floor((x_end + x_start) / 2.0);
+                int y_max = maxYIndex(x_mid, y_start, y_end, nums);
+                int peak = peakX(x_mid, y_max, nums);
+
+                if (peak == 0)
+                    return new int[]{y_max, x_mid};
+                else if (peak == -1)
+                    x_end = x_mid;
+                else if (peak == 1)
+                    x_start = x_mid + 1;
+            } else {
+                int y_mid = (int) Math.floor((y_end + y_start) / 2.0);
+                int x_max = maxXIndex(y_mid, x_start, x_end, nums);
+                int peak = peakY(x_max, y_mid, nums);
+
+                if (peak == 0)
+                    return new int[]{y_mid, x_max};
+                else if (peak == -1)
+                    y_end = y_mid;
+                else if (peak == 1)
+                    y_start = y_mid + 1;
+            }
+            b = !b;
+        }
         return null;
     }
 
