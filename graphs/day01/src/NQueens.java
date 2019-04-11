@@ -48,10 +48,57 @@ public class NQueens {
         return B;
     }
 
+    private static boolean checkValidity(char[][] board, int rowNum, int colNum, int[] occCol) {
+        // Assume no conflicts in rows - will only add to one row at a time
+        // Check conflicts with columns
+        if (occCol[colNum] == 1) {
+            return false;
+        }
+        // Check conflicts with diagonals
+        if (checkDiagonal(board, rowNum, colNum)) {
+            return false;
+        }
+        return true;
+    }
+
+    private static void addQueen(char[][] board, int rowNum, int colNum, int[] occCol) {
+        occCol[colNum] = 1;
+        board[rowNum][colNum] = 'Q';
+    }
+    private static void removeQueen(char[][] board, int rowNum, int colNum, int[] occCol) {
+        occCol[colNum] = 0;
+        board[rowNum][colNum] = '.';
+    }
+
+
+    private static void nQueensHelper(char[][] board, int n, List<char[][]> output, int rowNum, int[] occCol) {
+        if (rowNum == n) {
+            output.add(copyOf(board));
+            return;
+        }
+        for (int colNum = 0; colNum < n; colNum++) {
+            if (checkValidity(board, rowNum, colNum, occCol)) {
+                addQueen(board, rowNum, colNum, occCol);
+                nQueensHelper(board, n, output, rowNum + 1, occCol); // add it to valid row
+                removeQueen(board, rowNum, colNum, occCol);
+            }
+            // else continue on and add queen to a different column
+        }
+    }
 
     public static List<char[][]> nQueensSolutions(int n) {
         // TODO
+        char[][] board = new char[n][n];
+        int[] occCol = new int[n];
+        for (int i=0; i<board.length; i++) {
+            occCol[i] = 0;
+            for (int j=0; j<board.length; j++) {
+                board[i][j] = '.';
+            }
+        }
+
         List<char[][]> answers = new ArrayList<>();
+        nQueensHelper(board, n, answers, 0, occCol);
         return answers;
     }
 

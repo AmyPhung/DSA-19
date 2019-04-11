@@ -18,8 +18,8 @@ public class Solver {
     private class State {
         // Each state needs to keep track of its cost and the previous state
         private Board board;
-        private int moves; // equal to g-cost in A*
-        public int cost; // equal to f-cost in A*
+        private int moves; // equal to g-cost in A* // cost so far
+        public int cost; // equal to f-cost in A* // heuristic cost
         private State prev;
 
         public State(Board board, int moves, State prev) {
@@ -27,7 +27,11 @@ public class Solver {
             this.moves = moves;
             this.prev = prev;
             // TODO
-            cost = 0;
+            cost = board.manhattan();
+        }
+
+        public int computeHeuristic() {
+            return cost + moves;
         }
 
         @Override
@@ -44,6 +48,7 @@ public class Solver {
      */
     private State root(State state) {
         // TODO: Your code here
+
         return null;
     }
 
@@ -54,6 +59,94 @@ public class Solver {
      */
     public Solver(Board initial) {
         // TODO: Your code here
+
+        HashSet<Board> visited = new HashSet<>();
+        State initial_state = new State(initial, 0, null);
+
+        visited.add(initial_state.board);
+
+        Comparator<State> boardSorter = Comparator.comparing(State::computeHeuristic);
+        PriorityQueue<State> queue = new PriorityQueue<>(boardSorter);
+        queue.add(initial_state);
+
+        while (!queue.isEmpty()) {
+            try
+            {
+                Thread.sleep(500);
+            }
+            catch(InterruptedException ex)
+            {
+                Thread.currentThread().interrupt();
+            }
+
+            System.out.println(queue.size());
+            State cur_state = queue.poll();
+
+            for (int i=0; i<3; i++) {
+                for (int j=0;j<3;j++) {
+                    System.out.print(cur_state.board.tiles[i][j]);
+                }
+            }
+            System.out.println(" ");
+            System.out.println("Checking board...");
+            System.out.println(cur_state.board.isGoal());
+
+            if (cur_state.board.isGoal()) {
+                System.out.println("done!");
+                solutionState = cur_state;
+                minMoves = cur_state.moves;
+                return;
+            } else {
+                for (Board neighbor : cur_state.board.neighbors()) {
+                    State neighbor_state = new State(neighbor, cur_state.moves++, cur_state);
+
+                    if (!visited.contains(neighbor)) {
+                        visited.add(neighbor);
+                        queue.add(neighbor_state);
+
+                        System.out.println("Visited Boards!");
+                        for (Board v : visited) {
+                            for (int i=0; i<v.size; i++) {
+                                for (int j=0; j<v.size; j++) {
+                                    System.out.print(v.tiles[i][j]);
+                                }
+
+                            }
+                            System.out.println(" ");
+                        }
+                    } else {
+                        System.out.println("hello");
+                    }
+                }
+
+            }
+        }
+
+        /*
+
+        Set <state> visited
+        initial_state = new state (initial, 0, null)
+
+        add initial_state to visited
+
+        queue = priorityqueue <State>
+        queue.put(initial_state.moves + inital_state.cost, inital_state)
+
+        while queue not empty :
+            State cur_state = queue.get() (last spot in path - lowest cost)
+            if cur_state == goal
+                solutionState = cur_state
+                min_moves = cur_state.moves
+                return;
+
+            for neighbor in cur_state.board.neighbors()
+                neighbor_state = new state (neighbor, cur_state.board.moves++, cur_state)
+                if neighbor_state not in visited
+                    visited.add(neighbor_state)
+                    queue.put(neighbor_state.moves + neighbor_state.cost, neighbor_state)
+         */
+
+
     }
 
     /*
@@ -62,7 +155,7 @@ public class Solver {
      */
     public boolean isSolvable() {
         // TODO: Your code here
-        return false;
+        return solutionState.board.solvable();
     }
 
     /*
@@ -70,6 +163,12 @@ public class Solver {
      */
     public Iterable<Board> solution() {
         // TODO: Your code here
+        // backtrack through solutionState
+//        State cur_state = solutionState;
+//        int num_moves
+//        while (cur_state.prev != null) {
+//
+//        }
         return null;
     }
 
