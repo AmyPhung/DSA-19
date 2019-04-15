@@ -111,38 +111,51 @@ public class Board {
     private int countInversions() {
         int inversions = 0;
 
-        int [] boardCopy = new int[n];
         for (int i=0; i<size; i++) {
             for (int j=0; j<size; j++) {
-                boardCopy[i*size+j] = tiles[i][j];
-            }
-        }
-
-        int idx = 0;
-        while (idx<boardCopy.length) {
-            if (boardCopy[idx] == 0) {
-                if (idx == n-1) { // If zero in correct place
-                    break;
+                for (int i2=i; i2<size; i2++) {
+                    for (int j2=j; j2<size; j2++) {
+                        if (tiles[i2][j2]==0 || tiles[i][j]==0) {
+                            continue;
+                        }
+                        else if (tiles[i2][j2] < tiles[i][j]) {
+                            inversions++;
+                        }
+                    }
                 }
 
-//                swap(boardCopy, idx,  size-1);
-                int temp = boardCopy[idx];
-                boardCopy[idx] = boardCopy[n-1];
-                boardCopy[n-1] = temp;
 
-            } else if (boardCopy[idx] != idx+1) {
-//                swap(boardCopy, idx, boardCopy[idx]-1);
-                int temp = boardCopy[idx];
-                boardCopy[idx] = boardCopy[boardCopy[idx]-1];
-                boardCopy[temp-1] = temp;
-
-                inversions++;
-
-            } else {
-                idx++;
+//                boardCopy[i*size+j] = tiles[i][j];
             }
-
         }
+
+//        int idx = 0;
+//        while (idx<boardCopy.length) {
+//            if (boardCopy[idx] == 0) {
+//                if (idx == n-1) { // If zero in correct place
+//                    break;
+//                }
+//
+////                swap(boardCopy, idx,  size-1);
+//                int temp = boardCopy[idx];
+//                boardCopy[idx] = boardCopy[n-1];
+//                boardCopy[n-1] = temp;
+//                inversions++;
+//
+//
+//            } else if (boardCopy[idx] != idx+1) {
+////                swap(boardCopy, idx, boardCopy[idx]-1);
+//                int temp = boardCopy[idx];
+//                boardCopy[idx] = boardCopy[boardCopy[idx]-1];
+//                boardCopy[temp-1] = temp;
+//
+//                inversions++;
+//
+//            } else {
+//                idx++;
+//            }
+//
+//        }
 
         return inversions;
     }
@@ -215,38 +228,44 @@ public class Board {
 //            Board new_board3 = swap(this, space_i, space_j-1, space_i, space_j);
             neighbors.add(new_board4);
         }
-
-
-        System.out.println("neighbors");
-        for (Board neighbor : neighbors){
-            for (int i=0; i<size; i++) {
-                for (int j=0; j<size; j++) {
-                    System.out.print(neighbor.tiles[i][j]);
-
-                }
-            }
-            System.out.println(" ");
-        }
+//
+//        System.out.println("original");
+//        for (int i=0; i<size; i++) {
+//            for (int j = 0; j < size; j++) {
+//                System.out.print(tiles[i][j]);
+//
+//            }
+//        }
+//        System.out.println("neighbors");
+//        for (Board neighbor : neighbors){
+//            for (int i=0; i<size; i++) {
+//                for (int j=0; j<size; j++) {
+//                    System.out.print(neighbor.tiles[i][j]);
+//
+//                }
+//            }
+//            System.out.println(" ");
+//        }
         return neighbors;
     }
 
     public Board swap(Board b, int i1, int j1, int i2, int j2) {
         Board new_board = new Board(b.tiles.clone());
-        System.out.println(i1 + " " +  i2 + " " + j1 + " " + j2);
+//        System.out.println(i1 + " " +  i2 + " " + j1 + " " + j2);
 
 
         int temp = new_board.tiles[i1][j1];
         new_board.tiles[i1][j1] = new_board.tiles[i2][j2];
         new_board.tiles[i2][j2] = temp;
 
-        System.out.println("Swap results");
-        for (int i=0; i<size; i++) {
-            for (int j=0; j<size; j++) {
-                System.out.print(new_board.tiles[i][j]);
-
-            }
-        }
-        System.out.println(" ");
+//        System.out.println("Swap results");
+//        for (int i=0; i<size; i++) {
+//            for (int j=0; j<size; j++) {
+//                System.out.print(new_board.tiles[i][j]);
+//
+//            }
+//        }
+//        System.out.println(" ");
 
         return new_board;
 //        for (int i=0; i<size; i++) {
@@ -257,7 +276,17 @@ public class Board {
 //        System.out.println(" ");
     }
 
-
+    public int integerRep() {
+        int n = 0;
+        int current_n = 0;
+        for (int i=0; i<tiles.length; i++) {
+            for (int j=0; j<tiles.length; j++) {
+                n = n + tiles[i][j]*current_n;
+                current_n = current_n*10;
+            }
+        }
+        return n;
+    }
 
     private boolean validPoint(int i, int j) {
         if (i<0 || j<0 || i>=size || j >=size) {
@@ -283,24 +312,39 @@ public class Board {
      */
     @Override
     public boolean equals(Object x) {
+//        System.out.println("checking equals1");
         // Check if the board equals an input Board object
         if (x == this) return true;
         if (x == null) return false;
         if (!(x instanceof Board)) return false;
         // Check if the same size
         Board y = (Board) x;
-        if (y.tiles.length != n || y.tiles[0].length != n) {
+        if (y.tiles.length != size || y.tiles[0].length != size) {
             return false;
         }
+//        System.out.println("checking tile config");
         // Check if the same tile configuration
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
                 if (this.tiles[i][j] != y.tiles[i][j]) {
                     return false;
                 }
             }
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int digit = 0;
+        int hash = 0;
+        for (int i=0; i<size; i++) {
+            for (int j=0; j<size; j++) {
+                hash += Math.pow(10,digit)*tiles[i][j];
+                digit++;
+            }
+        }
+        return hash;
     }
 
     public static void main(String[] args) {

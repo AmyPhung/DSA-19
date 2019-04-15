@@ -70,11 +70,17 @@ public class RubiksCubeTest {
         RubiksCube r2 = new RubiksCube();
         char lowercase = Character.toLowerCase(rotation);
         char uppercase = Character.toUpperCase(rotation);
+
+
         // same rotation to two solved cubes produces equal cubes
         assertEquals(r1.rotate(lowercase), r2.rotate(lowercase));
         assertEquals(r1.rotate(uppercase), r2.rotate(uppercase));
         // two clockwise and two counter-clockwise produce equal cubes
         assertEquals(r1.rotate(lowercase).rotate(lowercase), r2.rotate(uppercase).rotate(uppercase));
+
+
+
+
         // opposite rotations do not produce equal cubes
         assertNotEquals(r1.rotate(lowercase), r2.rotate(uppercase));
         // three rotates in one direction is one rotate in the other

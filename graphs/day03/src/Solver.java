@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Solver {
 
-    public int minMoves = -1;
+    public int minMoves;
     private State solutionState;
     private boolean solved = false;
 
@@ -36,6 +36,7 @@ public class Solver {
 
         @Override
         public boolean equals(Object s) {
+//            System.out.println("checking equals2");
             if (s == this) return true;
             if (s == null) return false;
             if (!(s instanceof State)) return false;
@@ -58,64 +59,79 @@ public class Solver {
      * and a identify the shortest path to the the goal state
      */
     public Solver(Board initial) {
+        solutionState = new State(initial,-1,null);
+//        if (!initial.solvable()) {
+//            return;
+//        }
+
         // TODO: Your code here
 
-        HashSet<Board> visited = new HashSet<>();
+        HashMap<Board, Integer> visited = new HashMap<>();
+        HashSet<Integer> visitedInt = new HashSet<>();
         State initial_state = new State(initial, 0, null);
 
-        visited.add(initial_state.board);
+        visited.put(initial, initial_state.moves);
 
         Comparator<State> boardSorter = Comparator.comparing(State::computeHeuristic);
         PriorityQueue<State> queue = new PriorityQueue<>(boardSorter);
         queue.add(initial_state);
 
         while (!queue.isEmpty()) {
-            try
-            {
-                Thread.sleep(500);
-            }
-            catch(InterruptedException ex)
-            {
-                Thread.currentThread().interrupt();
-            }
+//            System.out.println("loop");
+//            try
+//            {
+//                Thread.sleep(500);
+//            }
+//            catch(InterruptedException ex)
+//            {
+//                Thread.currentThread().interrupt();
+//            }
 
-            System.out.println(queue.size());
+//            System.out.println(queue.size());
             State cur_state = queue.poll();
 
-            for (int i=0; i<3; i++) {
-                for (int j=0;j<3;j++) {
-                    System.out.print(cur_state.board.tiles[i][j]);
-                }
-            }
-            System.out.println(" ");
-            System.out.println("Checking board...");
-            System.out.println(cur_state.board.isGoal());
+//            for (int i=0; i<3; i++) {
+//                for (int j=0;j<3;j++) {
+//                    System.out.print(cur_state.board.tiles[i][j]);
+//                }
+//            }
+//            System.out.println(" ");
+//            System.out.println("Checking board...");
+//            System.out.println(cur_state.board.isGoal());
 
             if (cur_state.board.isGoal()) {
                 System.out.println("done!");
                 solutionState = cur_state;
+                solved = true;
                 minMoves = cur_state.moves;
                 return;
             } else {
-                for (Board neighbor : cur_state.board.neighbors()) {
-                    State neighbor_state = new State(neighbor, cur_state.moves++, cur_state);
+                Iterable<Board> neighbors = cur_state.board.neighbors();
+                for (Board neighbor : neighbors) {
+                    State neighbor_state = new State(neighbor, cur_state.moves + 1, cur_state);
 
-                    if (!visited.contains(neighbor)) {
-                        visited.add(neighbor);
+                    if (visited.getOrDefault(neighbor, null) == null) {
+                        visited.put(neighbor, neighbor_state.moves);
                         queue.add(neighbor_state);
 
-                        System.out.println("Visited Boards!");
-                        for (Board v : visited) {
-                            for (int i=0; i<v.size; i++) {
-                                for (int j=0; j<v.size; j++) {
-                                    System.out.print(v.tiles[i][j]);
-                                }
-
-                            }
-                            System.out.println(" ");
-                        }
+//                        System.out.println("Visited Boards!");
+//                        System.out.println(visited.getOrDefault(neighbor, null));
+//                        for (Board v : visited.keySet()) {
+//                            for (int i=0; i<v.size; i++) {
+//                                for (int j=0; j<v.size; j++) {
+//                                    System.out.print(v.tiles[i][j]);
+//                                }
+//
+//                            }
+//                            System.out.println(" ");
+//                        }
                     } else {
-                        System.out.println("hello");
+//                        System.out.println("reached else case");
+                        if (visited.get(neighbor) > neighbor_state.moves) {
+                            visited.put(neighbor, neighbor_state.moves);
+
+                            queue.add(neighbor_state);
+                        }
                     }
                 }
 
@@ -169,6 +185,7 @@ public class Solver {
 //        while (cur_state.prev != null) {
 //
 //        }
+
         return null;
     }
 
