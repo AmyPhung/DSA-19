@@ -39,14 +39,11 @@ public class RubiksCube {
     // return true if this rubik's cube is equal to the other rubik's cube
     @Override
     public boolean equals(Object obj) {
-//        System.out.println("running equals");
 
         if (!(obj instanceof RubiksCube))
             return false;
         RubiksCube other = (RubiksCube) obj;
-        // TODO
 
-//        System.out.println("comparing cubes");
         for (int i=0; i<size; i++) {
             for (int j=0; j<size; j++) {
                 for (int k=0; k<size; k++) {
@@ -57,7 +54,7 @@ public class RubiksCube {
                 }
             }
         }
-//        System.out.println("returning true");
+
         return true;
     }
 
@@ -86,11 +83,20 @@ public class RubiksCube {
         return hash;
     }
 
+    public void print() {
+        for (int i=0; i<size; i++) {
+            for (int j=0; j<size; j++) {
+                for (int k=0; k<size; k++) {
+                    System.out.print(cube[i][j][k]);
+                }
+            }
+        }
+        System.out.println(" ");
+    }
+
     public boolean isSolved() {
         // TODO
         RubiksCube solved = new RubiksCube();
-//        System.out.println("Is Solved Result:");
-//        System.out.println(this.equals(solved));
         return this.equals(solved);
 
     }
@@ -221,6 +227,19 @@ public class RubiksCube {
         }
     }
 
+    public Iterable<RubiksCube> neighbors() {
+        ArrayList<RubiksCube> neighbors = new ArrayList<>();
+        char[] moves = {'u','U','r','R','f','F'};
+
+        for (char move : moves) {
+            RubiksCube new_neighbor;
+            new_neighbor = rotate(move);
+            neighbors.add(new_neighbor);
+        }
+
+        return neighbors;
+    }
+
     // returns a random scrambled rubik's cube by applying random rotations
     public static RubiksCube scrambledCube(int numTurns) {
         RubiksCube r = new RubiksCube();
@@ -259,10 +278,14 @@ public class RubiksCube {
     }
 
 
+
     // return the list of rotations needed to solve a rubik's cube
     public List<Character> solve() {
         // TODO
-        return new ArrayList<>();
+
+        Solver solver = new Solver(this);
+
+        return solver.ListSolution();
     }
 
 }
