@@ -78,8 +78,13 @@ public class RubiksCube {
     }
 
     // index from 0-23, color from 0-5
+<<<<<<< HEAD
     private void setColor(int index, int color) {
         BitSet colorBitset = intToBitset(color);
+=======
+    private void setColor(int index, int number) {
+        BitSet colorBitset = intToBitset(number);
+>>>>>>> 31cb27b9d74cb56122758cb1882453003c4788dd
         for (int i = 0; i < 3; i++)
             cube.set(index * 3 + i, colorBitset.get(i));
     }

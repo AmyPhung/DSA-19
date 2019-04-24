@@ -40,25 +40,35 @@ public class IndexPQ<Key extends Comparable<Key>> {
         swim(n);
     }
 
-    public int delMin() {
+    public Key delMin() {
+        // Modified to return Key instead of int
+
         if (n == 0) throw new NoSuchElementException("Priority queue underflow");
         int min = pq[1];
+        Key min_key = keys[min];
         exch(1, n--);
         sink(1);
         assert min == pq[n + 1];
         qp[min] = -1;        // delete
         keys[min] = null;    // to help with garbage collection
         pq[n + 1] = -1;        // not needed
-        return min;
+        return min_key;
     }
 
 
     public void changeKey(int i, Key key) {
+        // Modified to only change key if input is less than original
+
         if (i < 0 || i >= maxN) throw new IllegalArgumentException();
         if (!contains(i)) throw new NoSuchElementException("index is not in the priority queue");
-        keys[i] = key;
-        swim(qp[i]);
-        sink(qp[i]);
+
+        Key old_key = keys[i];
+
+        if (key.compareTo(old_key) < 0) {
+            keys[i] = key;
+            swim(qp[i]);
+            sink(qp[i]);
+        }
     }
 
     @Deprecated
